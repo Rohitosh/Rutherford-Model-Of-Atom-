@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Rutherford model — interactive lab</title>
+  <link rel="stylesheet" href="styles.css">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body>
+  <div class="container">
+    <div class="left">
+      <div class="header">
+        <div class="logo"></div>
+        <div>
+          <div class="title">Rutherford Scattering — Interactive Lab</div>
+          <div class="small">Visual & quantitative reproduction of Rutherford's gold-foil experiment</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div style="display:flex;gap:12px;align-items:center;justify-content:space-between">
+          <div class="controls">
+            <button id="btnPlay" class="btn">Play</button>
+            <button id="btnPause" class="btn">Pause</button>
+            <button id="btnReset" class="btn">Reset</button>
+            <label class="small">Speed</label>
+            
+            <input id="speed" type="range" min="0.25" max="6" step="0.25" value="1">
+          </div>
+          <div class="small">Particles: <span id="statParticles" class="stat">—</span></div>
+        </div>
+
+        <div class="canvas-wrap" style="margin-top:12px">
+          <canvas id="simCanvas" width="740" height="520"></canvas>
+        </div>
+
+        <div class="legend">
+          <div class="item"><div style="width:12px;height:12px;background:#ffcf4d;border-radius:50%"></div> Nucleus</div>
+          <div class="item"><div style="width:12px;height:3px;background:gold"></div> Gold foil</div>
+          <div class="item"><div style="width:12px;height:12px;background:#ff6b6b;border-radius:50%"></div> Scattered α (detected)</div>
+          <div class="item"><div style="width:12px;height:12px;background:#6eb5ff;border-radius:50%"></div> Unscattered / forward</div>
+        </div>
+
+        <div class="footer">Controls: adjust particle count or energy on the right. Data is computed using Rutherford's analytic formula and shown in the histogram (right panel).</div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="panel">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <label>Particles to simulate: <input id="inputN" type="number" value="1000" min="100" step="100"></label>
+          <label>Alpha energy (MeV): <input id="inputE" type="number" value="5.0" step="0.1"></label>
+          <label>Max impact parameter b<sub>max</sub> (Å): <input id="inputB" type="number" value="1.0" step="0.1"></label>
+          <label>Angular bins (deg): <input id="inputBins" type="number" value="180" min="18" step="18"></label>
+          <div style="display:flex;gap:8px;">
+            <button id="btnSim" class="btn">Run Simulation</button>
+            <button id="btnExport" class="btn">Export CSV</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:12px">
+        <div style="font-weight:600">Mathematical summary</div>
+        <div class="small" style="margin-top:8px;line-height:1.45">
+          Rutherford differential cross-section:
+          <div style="margin-top:6px;font-family:monospace;background:#070707;padding:8px;border-radius:6px">
+            dσ/dΩ = ( (Z₁ Z₂ e²) / (16 π ε₀ E) )² × 1 / sin⁴(θ/2)
+          </div>
+          Use impact parameter → θ mapping:
+          <div style="margin-top:6px;font-family:monospace;background:#070707;padding:8px;border-radius:6px">
+            tan(θ/2) = (k q₁ q₂) / (2 E b), &nbsp; k = 1/(4π ε₀)
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:12px">
+        <canvas id="histCanvas" width="360" height="220"></canvas>
+        <div class="small" style="margin-top:8px">Black: simulated counts — Orange: theoretical curve (normalized)</div>
+      </div>
+    </div>
+  </div>
+<!-- Theory & Conclusion Panel -->
+<section class="info-panel">
+  <h2>Theory</h2>
+  <p>
+    According to Rutherford’s model, an atom consists of a small, dense, positively charged nucleus,
+    around which electrons revolve in circular orbits, similar to planets around the Sun. Most of the atom’s
+    volume is empty space. The model was supported by the famous gold-foil experiment.
+  </p>
+
+  <h2>Conclusion from Experiment</h2>
+  <ul>
+    <li>Most α-particles passed through without deflection → most of the atom is empty space.</li>
+    <li>A small fraction were deflected at large angles → nucleus is small, dense, and positively charged.</li>
+    <li>Large deflections occur when α-particles approach the nucleus closely.</li>
+  </ul>
+
+  <h2>Limitations</h2>
+  <ul>
+    <li>Could not explain stability of atoms — why orbiting electrons don’t spiral into the nucleus.</li>
+    <li>Could not account for discrete spectral lines of hydrogen and other elements.</li>
+    <li>Neglected quantum mechanical effects.</li>
+  </ul>
+</section>
+
+  <script src="app.js"></script>
+</body>
+</html> 
