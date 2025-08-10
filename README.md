@@ -22,14 +22,18 @@ Cross-Platform – Works in any modern browser.
 
 ##  Project Structure
 rutherford model of atom/
+
 │── index.html           # Main web interface
+
 │── styles.css           # Styles for visualization
+
 │── app.js               # JavaScript logic for simulation
+
 │── rutherford_export.cpp # C++ code for data generation
-│── rutherford_export.exe # Precompiled executable (Windows)
+
 │── angles.csv           # Particle scattering angle data
+
 │── trajectories.csv     # Particle path data
-│── .vscode/             # VS Code settings
 
 
 ## Tech Stack
@@ -41,6 +45,16 @@ HTML5 / CSS3 / JavaScript – Visualization
 CSV Data Handling – For simulation results
 
 VS Code – Development environment
+
+
+## GIF of project
+
+
+https://github.com/user-attachments/assets/6e49f3c0-4b8b-4a4c-bfcf-534020c72bcc
+
+
+
+
 
 
 
