@@ -1,8 +1,7 @@
-  // app.js
-  // Place in same folder as index.html and styles.css
+
 
   (() => {
-    // constants
+
     const e_charge = 1.602176634e-19;
     const epsilon0 = 8.8541878128e-12;
     const pi = Math.PI;
@@ -25,11 +24,11 @@
     const statParticles = document.getElementById('statParticles');
     const speedRange = document.getElementById('speed');
 
-    let particles = []; // particle objects for animation
+    let particles = [];
     let simState = { playing: false, frame:0, speed:1.0 };
     let simParams = {};
 
-    // canvas geometry mapping: we will place foil plane at center X
+   
     const W = simCanvas.width;
     const H = simCanvas.height;
     const foilXpx = Math.round(W * 0.5);
@@ -37,14 +36,12 @@
     const nucleusRadiusPx = 8;
     const detectorRpx = 220;
 
-    // utility: map physical meters to pixels - we choose a scale based on bmax and display region
     function computeScale(bmax_m) {
-      // we want bmax to fit within ~ half canvas height
+      // we want bmax to fit within ~ half canvas height?? figure it out mannnnnn
       const pixelsPerMeter = (H * 0.9) / (2.0 * bmax_m); // rough
       return pixelsPerMeter;
     }
 
-    // run the analytic Monte Carlo simulation and produce particle trajectories and histogram
     function runSimulation() {
       const N = Math.max(100, parseInt(inputN.value, 10));
       const E_MeV = parseFloat(inputE.value);
@@ -53,15 +50,15 @@
 
       const bmax = bmax_ang * 1e-10; // convert Å -> meters
       const E_joule = E_MeV * 1e6 * e_charge;
-      // choose arbitrary non-relativistic v for animation (scales only)
+  
       const v0 = Math.sqrt(2.0 * E_joule / (4.0 * 1.66053906660e-27)); // alpha mass 4 amu
 
-      // theoretical prefactor: (k q1 q2 / (16 E))^2 but we will compute later for dσ/dΩ normalized
+       // (k q1 q2 / (16 E))^2
       const Z1 = 2.0, Z2 = 79.0;
       const q1 = Z1 * e_charge, q2 = Z2 * e_charge;
-      const pref = Math.pow((k_coulomb * q1 * q2) / (4.0 * E_joule), 2.0); // note: using 1/(4E) to match formula; will scale later
+      const pref = Math.pow((k_coulomb * q1 * q2) / (4.0 * E_joule), 2.0); 
 
-      // prepare histogram
+      
       const hist = new Array(bins).fill(0);
       const thetaCenters = new Array(bins);
       for (let i=0;i<bins;i++) thetaCenters[i] = (i + 0.5) * Math.PI / bins; // radians
@@ -74,7 +71,7 @@
       particles = [];
       const angles_deg = [];
       for (let i=0;i<N;i++){
-        // sample b with area-weighting
+      
         const u = Math.random();
         const b = bmax * Math.sqrt(u);
         // sign
@@ -94,12 +91,10 @@
         if (bin >= bins) bin = bins-1;
         hist[bin]++;
 
-        // create a trajectory: we will record a simple pre-foil line then post-foil line at angle theta
-        // position units are in meters; we'll map to pixels in drawing
-        // start x at -Xstart (m)
+        
         const startX = - (W/2) / pxPerM * 0.8; // map half-canvas to meters left
         const foilX = 0.0;
-        // pre-positions: many frames approaching foil
+        // pre-positions: many frames approaching foil 
         const preFrames = 24;
         const postFrames = 120;
         const traj = [];
@@ -108,7 +103,6 @@
           const x = startX + dxPre * f;
           traj.push({x:x, y:y0});
         }
-        // at foil: compute post velocity direction
         const thetaSigned = (y0 >= 0 ? theta : -theta);
         const vx = v0 * Math.cos(thetaSigned);
         const vy = v0 * Math.sin(thetaSigned);
@@ -130,7 +124,7 @@
       // update UI
       statParticles.textContent = N;
 
-      // compute theoretical pdf per theta bin: dσ/dΩ ~ 1/sin^4(θ/2). We'll convert to expected counts per bin
+      
       const theory = new Array(bins).fill(0.0);
       let norm = 0.0;
       for (let i=0;i<bins;i++){
@@ -138,7 +132,7 @@
         const sinHalf = Math.sin(theta/2.0);
         if (sinHalf <= 0) { theory[i]=0; continue;}
         const dsdo = pref / Math.pow(sinHalf, 4.0); // unnormalized
-        // convert to counts per theta by multiplying with 2π sinθ dθ
+      // multiplying with 2π sinθ dθ
         const dtheta = Math.PI / bins;
         const mass = dsdo * (2.0 * Math.PI * Math.sin(theta)) * dtheta;
         theory[i] = mass;
@@ -146,15 +140,14 @@
       }
       const expected = theory.map(v => (norm>0 ? v / norm * N : 0));
 
-      // save sim results to state
+      
       simParams = {N, E_MeV, bmax, bins, hist, expected, thetaCenters, angles:angles_deg, particles, pxPerM};
 
-      // draw histogram and prepare animation
       drawHistogram(simParams);
       simState.frame = 0;
     }
 
-    // draw histogram: histogram (black background), simulated bars vs theoretical curve
+   
     function drawHistogram(state) {
       const w = histCanvas.width, h = histCanvas.height;
       hctx.clearRect(0,0,w,h);
@@ -284,13 +277,12 @@
       document.body.appendChild(a); a.click(); a.remove();
     }
 
-    // wire up UI
     btnSim.addEventListener('click', () => { runSimulation(); });
     btnPlay.addEventListener('click', () => { simState.playing = true; });
     btnPause.addEventListener('click', () => { simState.playing = false; });
     btnReset.addEventListener('click', () => { simState.playing = false; simState.frame = 0; });
     btnExport.addEventListener('click', exportAnglesCSV);
 
-    // start animation loop
     requestAnimationFrame(animateSim);
   })();
+
